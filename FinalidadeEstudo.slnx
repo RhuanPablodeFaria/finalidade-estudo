@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="./src/FinalidadeEstudo.Application/FinalidadeEstudo.Application.csproj" />
+    <Project Path="./src/FinalidadeEstudo.CrossCutting/FinalidadeEstudo.CrossCutting.csproj" />
+    <Project Path="./src/FinalidadeEstudo.Domain/FinalidadeEstudo.Domain.csproj" />
+    <Project Path="./src/FinalidadeEstudo.Infrastructure/FinalidadeEstudo.Infrastructure.csproj" />
+    <Project Path="./src/FinalidadeEstudo.API/FinalidadeEstudo.API.csproj" />
+  </Folder>
+</Solution>
