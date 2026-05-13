@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Messaging\" />
+    <Folder Include="UnitOfWork\" />
+    <Folder Include="Persistence\" />
+  </ItemGroup>
+
 </Project>

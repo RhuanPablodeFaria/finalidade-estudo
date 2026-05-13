@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="DependencyInjection\" />
+    <Folder Include="Configuration\" />
+    <Folder Include="Logging\" />
+  </ItemGroup>
+
 </Project>
