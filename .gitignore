@@ -363,5 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # AppSettiings apenas para dev
-appsettings.json
+appsettings.Development.json
 /.idea/.idea.BarsSocialNetwork/.idea

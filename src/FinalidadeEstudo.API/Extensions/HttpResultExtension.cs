@@ -1,4 +1,4 @@
-﻿using FinalidadeEstudo.Application.Common.Results;
+﻿using FinalidadeEstudo.Application.Common;
 using FinalidadeEstudo.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 

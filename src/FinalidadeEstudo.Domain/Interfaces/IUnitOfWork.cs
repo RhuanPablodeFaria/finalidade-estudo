@@ -1,5 +1,16 @@
-﻿namespace FinalidadeEstudo.Domain.Interfaces;
+﻿using FinalidadeEstudo.Domain.Interfaces.Repositories;
 
-public class IUnitOfWork
+namespace FinalidadeEstudo.Domain.Interfaces;
+
+public interface IUnitOfWork
 {
+    #region IRepositories
+
+    IUserRepository Users { get; }
+
+    #endregion
+
+
+    Task<int> CommitAsync(CancellationToken ct);
+
 }

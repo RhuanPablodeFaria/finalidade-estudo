@@ -1,6 +1,6 @@
 ﻿using FinalidadeEstudo.Domain.Enums;
 
-namespace FinalidadeEstudo.Application.Common.Results;
+namespace FinalidadeEstudo.Application.Common;
 
 public class Result
 {
@@ -36,7 +36,7 @@ public sealed class Result<T> : Result
         this.Data = data;
     }
 
-    public static Result<T> Success(T data) =>
+    public static Result<T> Success(T? data = default) =>
         new(true, EnumTypeResult.Ok, string.Empty, data);
 
     public static Result<T> Failure(string error, EnumTypeResult statusCode, T? data = default) =>
