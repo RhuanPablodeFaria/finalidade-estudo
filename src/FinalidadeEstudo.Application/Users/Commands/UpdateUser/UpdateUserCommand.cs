@@ -5,6 +5,6 @@ namespace FinalidadeEstudo.Application.Users.Commands.UpdateUser;
 
 public sealed record UpdateUserCommand(
         Guid Id,
-        DateTime? DateBirth,
         string? Name,
-        string? Email) : IRequest<Result<string>>;
+        string? Email,
+        DateTime? DateBirth) : IRequest<Result<string>>;

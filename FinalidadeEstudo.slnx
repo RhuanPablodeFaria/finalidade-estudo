@@ -1,9 +1,13 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="./src/FinalidadeEstudo.Application/FinalidadeEstudo.Application.csproj" />
-    <Project Path="./src/FinalidadeEstudo.CrossCutting/FinalidadeEstudo.CrossCutting.csproj" />
-    <Project Path="./src/FinalidadeEstudo.Domain/FinalidadeEstudo.Domain.csproj" />
-    <Project Path="./src/FinalidadeEstudo.Infrastructure/FinalidadeEstudo.Infrastructure.csproj" />
-    <Project Path="./src/FinalidadeEstudo.API/FinalidadeEstudo.API.csproj" />
+    <Project Path="src/FinalidadeEstudo.API/FinalidadeEstudo.API.csproj" />
+    <Project Path="src/FinalidadeEstudo.Application/FinalidadeEstudo.Application.csproj" />
+    <Project Path="src/FinalidadeEstudo.CrossCutting/FinalidadeEstudo.CrossCutting.csproj" />
+    <Project Path="src/FinalidadeEstudo.Domain/FinalidadeEstudo.Domain.csproj" />
+    <Project Path="src/FinalidadeEstudo.Infrastructure/FinalidadeEstudo.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/FinalidadeEstudo.IntegrationTests/FinalidadeEstudo.IntegrationTests.csproj"/>
+    <Project Path="test/FinalidadeEstudo.XUnit/FinalidadeEstudo.XUnit.csproj"/>
   </Folder>
 </Solution>

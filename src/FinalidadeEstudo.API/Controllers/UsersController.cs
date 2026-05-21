@@ -38,7 +38,7 @@ public sealed class UsersController(ISender sender) : BaseController
         [FromBody] UpdateUserRequest request,
         CancellationToken ct)
     {
-        var command = new UpdateUserCommand(id, request.DateBirth, request.Name, request.Email);
+        var command = new UpdateUserCommand(id, request.Name, request.Email, request.DateBirth);
         var result = await sender.Send(command, ct);
 
         return result.ToHttpResult();
@@ -55,7 +55,7 @@ public sealed class UsersController(ISender sender) : BaseController
         return result.ToHttpResult();
     }
 
-    [HttpPut("deactivate/{id:guid}")]
+    [HttpPatch("deactivate/{id:guid}")]
     public async Task<IActionResult> Deactivate(
         [FromRoute] Guid id,
         CancellationToken ct)
@@ -66,7 +66,7 @@ public sealed class UsersController(ISender sender) : BaseController
         return result.ToHttpResult();
     }
 
-    [HttpPut("activate/{id:guid}")]
+    [HttpPatch("activate/{id:guid}")]
     public async Task<IActionResult> Activate(
         [FromRoute] Guid id,
         CancellationToken ct)
