@@ -37,7 +37,7 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork)
             user.DateBirth
         );
 
-        return Result<CreateUserResponse>.Success(response);
+        return Result<CreateUserResponse>.Created(response);
     }
 
     private async Task<Result<CreateUserResponse>> ValidateCommand(CreateUserCommand command, CancellationToken ct)
@@ -56,7 +56,7 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork)
 
         var exists = await unitOfWork.Users.ExistByCpfCnpjAsync(command.CpfCnpj, ct);
         if (exists)
-            return Result<CreateUserResponse>.Failure("Email address and CPF/CNPJ are already registered.", EnumTypeResult.Conflict);
+            return Result<CreateUserResponse>.Failure("CPF/CNPJ are already registered.", EnumTypeResult.Conflict);
 
         return Result<CreateUserResponse>.Success();
     }

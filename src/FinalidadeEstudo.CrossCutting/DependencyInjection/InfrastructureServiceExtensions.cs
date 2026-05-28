@@ -16,7 +16,7 @@ public static class InfrastructureServiceExtensions
             ?? throw new InvalidOperationException(
                $"Missing configuration: '{DatabaseSettings.SectionName}:ConnectionString'");
 
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContextPool<AppDbContext>(options =>
             options.UseSqlServer(
                 connectionString,
                 sql => sql.MigrationsAssembly(
