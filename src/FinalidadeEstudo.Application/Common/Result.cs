@@ -39,6 +39,9 @@ public sealed class Result<T> : Result
     public static Result<T> Success(T? data = default) =>
         new(true, EnumTypeResult.Ok, string.Empty, data);
 
+    public static Result<T> Created(T? data = default) =>
+        new(true, EnumTypeResult.Created, string.Empty, data);
+
     public static Result<T> Failure(string error, EnumTypeResult statusCode, T? data = default) =>
         new(false, statusCode, error, data);
 }

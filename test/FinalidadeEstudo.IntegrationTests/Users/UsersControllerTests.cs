@@ -10,7 +10,6 @@ public sealed class UsersControllerTests(WebAppFactory factory)
 {
     private readonly HttpClient _client = factory.CreateClient();
 
-    // ── CREATE ────────────────────────────────────────────────
 
     [Fact]
     public async Task Post_ShouldReturn200_WhenUserIsCreated()
@@ -23,7 +22,7 @@ public sealed class UsersControllerTests(WebAppFactory factory)
     }
 
     [Fact]
-    public async Task Post_ShouldReturn409_WhenEmailAlreadyExists()
+    public async Task Post_ShouldReturn409_WhenCpfCnpjAlreadyExists()
     {
         var command = new CreateUserCommand("João Silva", "duplicado@email.com", "123456", "162.371.560-11", DateTime.Parse("10/11/2000"));
         await _client.PostAsJsonAsync("/api/users", command);
@@ -43,7 +42,6 @@ public sealed class UsersControllerTests(WebAppFactory factory)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
-    // ── GET ALL ───────────────────────────────────────────────
 
     [Fact]
     public async Task GetAll_ShouldReturn200_WithListOfUsers()
