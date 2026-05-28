@@ -6,6 +6,7 @@ using FinalidadeEstudo.Application.Users.Commands.Deactive;
 using FinalidadeEstudo.Application.Users.Commands.UpdateUser;
 using FinalidadeEstudo.Application.Users.Queries.GetAllUsers;
 using FinalidadeEstudo.Application.Users.Queries.GetUser;
+using FinalidadeEstudo.Domain.Projecao;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,9 +25,11 @@ public sealed class UsersController(ISender sender) : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] PaginatedGridConfiguration configGrid,
+        CancellationToken ct)
     {
-        var query = new GetAllUsersQuery();
+        var query = new GetAllUsersQuery(configGrid);
         var result = await sender.Send(query, ct);
 
         return result.ToHttpResult();
