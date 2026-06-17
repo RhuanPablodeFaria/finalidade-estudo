@@ -11,6 +11,7 @@ namespace FinalidadeEstudo.UnitTests.Users.Commands;
 
 public sealed class UpdateUserHandlerTests
 {
+    private readonly Mock<IAppLogger> _loggerMock = new();
     private readonly Mock<IUnitOfWork> _uowMock = new();
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly UpdateUserHandler _handler;
@@ -18,7 +19,7 @@ public sealed class UpdateUserHandlerTests
     public UpdateUserHandlerTests()
     {
         _uowMock.Setup(u => u.Users).Returns(_userRepositoryMock.Object);
-        _handler = new UpdateUserHandler(_uowMock.Object);
+        _handler = new UpdateUserHandler(_uowMock.Object, _loggerMock.Object);
     }
 
     [Fact]
@@ -26,8 +27,19 @@ public sealed class UpdateUserHandlerTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var command = new UpdateUserCommand(userId, "João Atualizado", "novo@email.com", DateTime.Parse("10/11/2000"));
-        var existingUser = User.Create("João", Email.Create("joao@email.com"), "hash", CpfCnpj.Create("049.915.810-52"), DateTime.Parse("10/11/2000"));
+
+        var command = new UpdateUserCommand(
+            userId,
+            "João Atualizado",
+            "novo@email.com",
+            DateTime.Parse("10/11/2000"));
+
+        var existingUser = User.Create(
+            "João",
+            Email.Create("joao@email.com"),
+            "hash",
+            CpfCnpj.Create("049.915.810-52"),
+            DateTime.Parse("10/11/2000"));
 
         _userRepositoryMock
             .Setup(r => r.GetAsync(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
@@ -43,13 +55,40 @@ public sealed class UpdateUserHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().Be("Update completed successfully.");
+
+        _userRepositoryMock.Verify(
+            r => r.UpdateAsync(
+                It.IsAny<User>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once());
+
+        _uowMock.Verify(
+            u => u.CommitAsync(It.IsAny<CancellationToken>()),
+            Times.Once());
+
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("initialized")), It.IsAny<object[]>()),
+            Times.Once());
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("validated")), It.IsAny<object[]>()),
+            Times.Once());
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("completed successfully")), It.IsAny<object[]>()),
+            Times.Once());
+        _loggerMock.Verify(
+            x => x.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()),
+            Times.Never());
     }
 
     [Fact]
     public async Task Handle_ShouldReturnBadRequest_WhenUserNotFound()
     {
         // Arrange
-        var command = new UpdateUserCommand(Guid.NewGuid(), "João", "joao@email.com", DateTime.Now);
+        var command = new UpdateUserCommand(
+            Guid.NewGuid(),
+            "João",
+            "joao@email.com",
+            DateTime.Now);
 
         _userRepositoryMock
             .Setup(r => r.GetAsync(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
@@ -61,16 +100,39 @@ public sealed class UpdateUserHandlerTests
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.StatusCode.Should().Be(EnumTypeResult.BadRequest);
+
+        _userRepositoryMock.Verify(
+            r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()),
+            Times.Never());
+
+        _uowMock.Verify(
+            u => u.CommitAsync(It.IsAny<CancellationToken>()),
+            Times.Never());
+
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("initialized")), It.IsAny<object[]>()),
+            Times.Once());
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("validated")), It.IsAny<object[]>()),
+            Times.Once());
+        _loggerMock.Verify(
+            x => x.LogWarning(It.Is<string>(msg => msg.Contains("not found")), It.IsAny<object[]>()),
+            Times.Once());
     }
 
     [Theory]
     [InlineData("João", "emailinvalido")]
     [InlineData("  ", "joao@email.com")]
     public async Task Handle_ShouldReturnBadRequest_WhenCommandIsInvalid(
-        string name, string email)
+        string name,
+        string email)
     {
         // Arrange
-        var command = new UpdateUserCommand(Guid.NewGuid(), name, email, DateTime.Now);
+        var command = new UpdateUserCommand(
+            Guid.NewGuid(),
+            name,
+            email,
+            DateTime.Now);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -78,5 +140,29 @@ public sealed class UpdateUserHandlerTests
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.StatusCode.Should().Be(EnumTypeResult.BadRequest);
+
+        _userRepositoryMock.Verify(
+            r => r.GetAsync(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()),
+            Times.Never());
+        _userRepositoryMock.Verify(
+            r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()),
+            Times.Never());
+
+        _uowMock.Verify(
+            u => u.CommitAsync(It.IsAny<CancellationToken>()),
+            Times.Never());
+
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("initialized")), It.IsAny<object[]>()),
+            Times.Once());
+        _loggerMock.Verify(
+            x => x.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()),
+            Times.Once());
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("validated")), It.IsAny<object[]>()),
+            Times.Never());
+        _loggerMock.Verify(
+            x => x.LogInformation(It.Is<string>(msg => msg.Contains("completed successfully")), It.IsAny<object[]>()),
+            Times.Never());
     }
 }
