@@ -6,29 +6,43 @@ using MediatR;
 
 namespace FinalidadeEstudo.Application.Users.Commands.UpdateUser;
 
-public sealed class UpdateUserHandler(IUnitOfWork unitOfWork)
+public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
     : IRequestHandler<UpdateUserCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(
         UpdateUserCommand command,
         CancellationToken ct)
     {
+        logger.LogInformation("Update of the user initialized.");
+
         var result = ValidateCommand(command);
 
         if (!result.IsSuccess)
+        {
+            logger.LogWarning(result.Error);
             return result;
+        }
+
+        logger.LogInformation("User credential validated.");
 
         var entityUser = await unitOfWork.Users.GetAsync(x => x.Id == command.Id, ct);
 
         if (entityUser is null)
-            return Result<string>.Failure($"User with ID: {command.Id}, not found.", EnumTypeResult.BadRequest);
+        {
+            var menssage = $"User with ID: {command.Id}, not found.";
+            logger.LogWarning(menssage);
+            return Result<string>.Failure(menssage, EnumTypeResult.BadRequest);
+        }
 
         entityUser.Update(command.Name, command.Email, command.DateBirth);
 
         await unitOfWork.Users.UpdateAsync(entityUser, ct);
         await unitOfWork.CommitAsync(ct);
 
-        return Result<string>.Success("Update completed successfully.");
+        var sucessMessage = "Update completed successfully.";
+
+        logger.LogInformation(sucessMessage);
+        return Result<string>.Success(sucessMessage);
     }
 
     private Result<string> ValidateCommand(UpdateUserCommand command)

@@ -7,17 +7,24 @@ using MediatR;
 
 namespace FinalidadeEstudo.Application.Users.Commands.CreateUser;
 
-public sealed class CreateUserHandler(IUnitOfWork unitOfWork)
+public sealed class CreateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
     : IRequestHandler<CreateUserCommand, Result<CreateUserResponse>>
 {
     public async Task<Result<CreateUserResponse>> Handle(
         CreateUserCommand command,
         CancellationToken ct)
     {
+        logger.LogInformation("Register of the user initialized.");
+
         var result = await ValidateCommand(command, ct);
 
         if (!result.IsSuccess)
+        {
+            logger.LogWarning(result.Error);
             return result;
+        }
+
+        logger.LogInformation("User credentials validated.");
 
         var email = Email.Create(command.Email);
         var cpfCnpj = CpfCnpj.Create(command.CpfCnpj);
@@ -37,6 +44,8 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork)
             user.DateBirth
         );
 
+
+        logger.LogInformation("User created successfully.");
         return Result<CreateUserResponse>.Created(response);
     }
 

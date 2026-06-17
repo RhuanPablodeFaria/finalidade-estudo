@@ -2,28 +2,42 @@
 using FinalidadeEstudo.Domain.Enums;
 using FinalidadeEstudo.Domain.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace FinalidadeEstudo.Application.Users.Commands.Active;
 
-public sealed class ActiveUserHandler(IUnitOfWork unitOfWork)
+public sealed class ActiveUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
     : IRequestHandler<ActivateUserCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(
         ActivateUserCommand command,
         CancellationToken ct)
     {
+        logger.LogInformation("User activation initialized.");
+
         var entityUser = await unitOfWork.Users.GetAsync(x => x.Id == command.Id, ct);
 
         if (entityUser is null)
-            return Result<string>.Failure($"User with ID: {command.Id}, not found.", EnumTypeResult.BadRequest);
+        {
+            var message = $"User with ID: {command.Id}, not found.";
+            logger.LogWarning(message);
+            return Result<string>.Failure(message, EnumTypeResult.BadRequest);
+        }
 
         if (entityUser.IsActive)
-            return Result<string>.Success("User is already activated.");
+        {
+            var message = "User is already activated.";
+            logger.LogInformation(message);
+            return Result<string>.Success(message);
+        }
 
         entityUser.Activate();
 
         await unitOfWork.CommitAsync(ct);
 
-        return Result<string>.Success("User successfully activated.");
+        var sucessMessage = "User successfully activated.";
+
+        logger.LogInformation(sucessMessage);
+        return Result<string>.Success(sucessMessage);
     }
 }
