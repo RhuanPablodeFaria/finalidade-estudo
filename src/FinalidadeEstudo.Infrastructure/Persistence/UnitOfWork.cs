@@ -20,6 +20,6 @@ public sealed class UnitOfWork(AppDbContext context) : IUnitOfWork
 
     #endregion
 
-    public Task<int> CommitAsync(CancellationToken ct = default) =>
-        context.SaveChangesAsync(ct);
+    public Task<int> CommitAsync(CancellationToken cancellationToken) =>
+        context.SaveChangesAsync(cancellationToken);
 }

@@ -11,10 +11,10 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery)
 {
     public async Task<Result<ProjectionResponse>> Handle(
         GetAllUsersQuery query,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         var configGrid = query.configGrid;
-        var users = await userQuery.GetAllAsync(ct: ct);
+        var users = await userQuery.GetAllAsync();
 
         var selectedQuery = users.Select(u => new GetAllUsersResponse
         {
@@ -44,7 +44,7 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery)
         };
 
         var projectionRequest = new ProjectionRequest<GetAllUsersResponse>(selectedQuery, configGrid.Start, configGrid.OffSet);
-        var result = await userQuery.PageAsync(projectionRequest, ct);
+        var result = await userQuery.PageAsync(projectionRequest, cancellationToken);
         return Result<ProjectionResponse>.Success(result);
     }
 }
