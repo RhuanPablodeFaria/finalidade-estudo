@@ -6,9 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddInfrastructureServices(builder.Configuration)
+                .AddLoggingServices(builder.Configuration)
+                .AddVersioningServices()
                 .AddApplicationServices()
-                .AddDependencyInjection()
-                .AddLoggingServices(builder.Configuration);
+                .AddDependencyInjection();
 
 builder.Services.AddOpenApi();
 
