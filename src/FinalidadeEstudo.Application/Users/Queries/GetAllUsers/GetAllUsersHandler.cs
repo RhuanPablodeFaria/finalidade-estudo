@@ -40,10 +40,10 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery)
             "3" => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.CpfCnpj),
             "4" => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.DateBirth),
             "5" => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.IsActive),
-            _ => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.Id)
+            _ => selectedQuery.SortBankInquiry("asc", x => x.Id)
         };
 
-        var projectionRequest = new ProjectionRequest<GetAllUsersResponse>(selectedQuery, configGrid.Start, configGrid.OffSet);
+        var projectionRequest = new ProjectionRequest<GetAllUsersResponse>(selectedQuery!, configGrid.Start, configGrid.OffSet);
         var result = await userQuery.PageAsync(projectionRequest, cancellationToken);
         return Result<ProjectionResponse>.Success(result);
     }

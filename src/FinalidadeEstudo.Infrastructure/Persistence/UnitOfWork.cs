@@ -8,7 +8,7 @@ public sealed class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
     #region Repositories
 
-    public IUserRepository? _users;
+    private IUserRepository? _users;
 
     #endregion
 

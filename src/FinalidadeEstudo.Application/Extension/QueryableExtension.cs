@@ -6,7 +6,7 @@ public static class QueryableExtension
 {
     public static IQueryable<T>? SortBankInquiry<T, TKey>(
         this IQueryable<T> query,
-        string Orderdirection,
+        string? Orderdirection,
         Expression<Func<T, TKey>> ordenationProperty)
     {
         if (string.IsNullOrWhiteSpace(Orderdirection) || ordenationProperty is null || query is null)

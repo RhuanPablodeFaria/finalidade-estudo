@@ -17,7 +17,7 @@ public abstract class QueryBase<T>(AppDbContext context) : IQueryBase<T> where T
         return Query;
     }
 
-    public async Task<T?> GetAsync(Expression<Func<T, bool>> func, CancellationToken cancellationToken = default) =>
+    public async Task<T?> GetAsync(Expression<Func<T, bool>> func, CancellationToken cancellationToken) =>
         await Query.FirstOrDefaultAsync(func, cancellationToken);
 
     public async Task<ProjectionResponse> PageAsync<TResult>(ProjectionRequest<TResult> projecao, CancellationToken cancellationToken) where TResult : class

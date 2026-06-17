@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+namespace FinalidadeEstudo.IntegrationTests;
+
 public sealed class WebAppFactory : WebApplicationFactory<Program>
 {
     private readonly string _databaseName = $"TestDb_{Guid.NewGuid()}";  // ← fixo por instância

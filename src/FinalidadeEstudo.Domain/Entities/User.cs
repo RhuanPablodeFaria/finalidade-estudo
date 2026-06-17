@@ -12,7 +12,6 @@ public sealed class User
     public bool IsActive { get; private set; }
     public CpfCnpj CpfCnpj { get; private set; }
     public DateTime DateBirth { get; private set; }
-    private User() { }
 
     private User(string name, Email email, string password, CpfCnpj cpfCnpj, DateTime dateBirth)
     {

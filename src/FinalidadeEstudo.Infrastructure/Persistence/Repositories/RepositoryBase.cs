@@ -6,7 +6,6 @@ namespace FinalidadeEstudo.Infrastructure.Persistence.Repositories;
 
 internal class RepositoryBase<T>(AppDbContext context) : IRepositoryBase<T> where T : class
 {
-    private readonly AppDbContext Context = context;
     protected readonly DbSet<T> Entity = context.Set<T>();
 
     public async Task AddAsync(T entity, CancellationToken cancellationToken) =>
