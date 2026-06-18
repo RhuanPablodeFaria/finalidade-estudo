@@ -10,9 +10,9 @@ public sealed class GetUserHandler(IUserQuery userQuery)
 {
     public async Task<Result<GetUserResponse>> Handle(
         GetUserQuery getUserQuery,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
-        var user = await userQuery.GetAsync(x => x.Id == getUserQuery.Id, ct);
+        var user = await userQuery.GetAsync(x => x.Id == getUserQuery.Id, cancellationToken);
 
         if (user is null)
             return Result<GetUserResponse>.Failure($"User with ID: {getUserQuery.Id}, not found.", EnumTypeResult.BadRequest);

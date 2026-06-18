@@ -6,18 +6,17 @@ namespace FinalidadeEstudo.Infrastructure.Persistence.Repositories;
 
 internal class RepositoryBase<T>(AppDbContext context) : IRepositoryBase<T> where T : class
 {
-    private readonly AppDbContext Context = context;
     protected readonly DbSet<T> Entity = context.Set<T>();
 
-    public async Task AddAsync(T entity, CancellationToken ct = default) =>
-        await Entity.AddAsync(entity, ct);
+    public async Task AddAsync(T entity, CancellationToken cancellationToken) =>
+        await Entity.AddAsync(entity, cancellationToken);
 
-    public Task UpdateAsync(T entity, CancellationToken ct = default)
+    public Task UpdateAsync(T entity)
     {
         Entity.Update(entity);
         return Task.CompletedTask;
     }
 
-    public async Task<T?> GetAsync(Expression<Func<T, bool>> func, CancellationToken ct = default) =>
-        await Entity.FirstOrDefaultAsync(func, ct);
+    public async Task<T?> GetAsync(Expression<Func<T, bool>> func, CancellationToken cancellationToken) =>
+        await Entity.FirstOrDefaultAsync(func, cancellationToken);
 }

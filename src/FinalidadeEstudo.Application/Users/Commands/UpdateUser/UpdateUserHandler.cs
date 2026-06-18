@@ -11,7 +11,7 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
 {
     public async Task<Result<string>> Handle(
         UpdateUserCommand command,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("Update of the user initialized.");
 
@@ -25,7 +25,7 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
 
         logger.LogInformation("User credential validated.");
 
-        var entityUser = await unitOfWork.Users.GetAsync(x => x.Id == command.Id, ct);
+        var entityUser = await unitOfWork.Users.GetAsync(x => x.Id == command.Id, cancellationToken);
 
         if (entityUser is null)
         {
@@ -36,8 +36,8 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
 
         entityUser.Update(command.Name, command.Email, command.DateBirth);
 
-        await unitOfWork.Users.UpdateAsync(entityUser, ct);
-        await unitOfWork.CommitAsync(ct);
+        await unitOfWork.Users.UpdateAsync(entityUser);
+        await unitOfWork.CommitAsync(cancellationToken);
 
         var sucessMessage = "Update completed successfully.";
 

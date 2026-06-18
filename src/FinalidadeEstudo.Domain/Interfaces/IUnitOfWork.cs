@@ -11,6 +11,6 @@ public interface IUnitOfWork
     #endregion
 
 
-    Task<int> CommitAsync(CancellationToken ct);
+    Task<int> CommitAsync(CancellationToken cancellationToken);
 
 }

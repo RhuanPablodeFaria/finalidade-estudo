@@ -15,7 +15,7 @@ public sealed class CpfCnpj
 
         return new CpfCnpj(normalized);
     }
-
+    public override int GetHashCode() => Value.GetHashCode();
     public override bool Equals(object? obj) =>
         obj is CpfCnpj other && Value == other.Value;
 

@@ -8,12 +8,12 @@ namespace FinalidadeEstudo.Infrastructure.Persistence.Repositories;
 internal sealed class UserRepository(AppDbContext context) :
     RepositoryBase<User>(context), IUserRepository
 {
-    public async Task<bool> ExistByCpfCnpjAsync(string cpfCnpj, CancellationToken ct = default)
+    public async Task<bool> ExistByCpfCnpjAsync(string cpfCnpj, CancellationToken cancellationToken)
     {
         var VOCpfCnpj = CpfCnpj.Create(cpfCnpj);
 
         return await Entity.AnyAsync(
             x => x.CpfCnpj.Equals(VOCpfCnpj),
-            ct);
+            cancellationToken);
     }
 }
