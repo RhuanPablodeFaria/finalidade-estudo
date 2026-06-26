@@ -12,11 +12,11 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
 {
     public async Task<Result<CreateUserResponse>> Handle(
         CreateUserCommand command,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("Register of the user initialized.");
 
-        var result = await ValidateCommand(command, ct);
+        var result = await ValidateCommand(command, cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -31,8 +31,8 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
 
         var user = User.Create(command.Name, email, command.Password, cpfCnpj, command.DateBirth);
 
-        await unitOfWork.Users.AddAsync(user, ct);
-        await unitOfWork.CommitAsync(ct);
+        await unitOfWork.Users.AddAsync(user, cancellationToken);
+        await unitOfWork.CommitAsync(cancellationToken);
 
         var response = new CreateUserResponse(
             user.Id,
@@ -49,7 +49,7 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
         return Result<CreateUserResponse>.Created(response);
     }
 
-    private async Task<Result<CreateUserResponse>> ValidateCommand(CreateUserCommand command, CancellationToken ct)
+    private async Task<Result<CreateUserResponse>> ValidateCommand(CreateUserCommand command, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(command.Name))
             return Result<CreateUserResponse>.Failure("Name is required.", EnumTypeResult.BadRequest);
@@ -63,7 +63,7 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
         if (string.IsNullOrWhiteSpace(command.Password) || command.Password.Length < 6)
             return Result<CreateUserResponse>.Failure("Password must contain at least 6 characters.", EnumTypeResult.BadRequest);
 
-        var exists = await unitOfWork.Users.ExistByCpfCnpjAsync(command.CpfCnpj, ct);
+        var exists = await unitOfWork.Users.ExistByCpfCnpjAsync(command.CpfCnpj, cancellationToken);
         if (exists)
             return Result<CreateUserResponse>.Failure("CPF/CNPJ are already registered.", EnumTypeResult.Conflict);
 

@@ -7,15 +7,15 @@ public static class PageLayoutProjection
 {
     public static async Task<ProjectionResponse> PaginarAsync<T>(
         ProjectionRequest<T> request,
-        CancellationToken ct = default) where T : class
+        CancellationToken cancellationToken) where T : class
     {
         if (request.Queryable is not null)
         {
-            var total = await request.Queryable.CountAsync(ct);
+            var total = await request.Queryable.CountAsync(cancellationToken);
             var data = await request.Queryable
                 .Skip(request.Start)
                 .Take(request.OffSet)
-                .ToListAsync(ct);
+                .ToListAsync(cancellationToken);
 
             return ProjectionResponse.Create(data, total);
         }

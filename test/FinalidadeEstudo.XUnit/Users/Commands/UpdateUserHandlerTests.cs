@@ -58,8 +58,7 @@ public sealed class UpdateUserHandlerTests
 
         _userRepositoryMock.Verify(
             r => r.UpdateAsync(
-                It.IsAny<User>(),
-                It.IsAny<CancellationToken>()),
+                It.IsAny<User>()),
             Times.Once());
 
         _uowMock.Verify(
@@ -102,7 +101,7 @@ public sealed class UpdateUserHandlerTests
         result.StatusCode.Should().Be(EnumTypeResult.BadRequest);
 
         _userRepositoryMock.Verify(
-            r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()),
+            r => r.UpdateAsync(It.IsAny<User>()),
             Times.Never());
 
         _uowMock.Verify(
@@ -145,7 +144,7 @@ public sealed class UpdateUserHandlerTests
             r => r.GetAsync(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()),
             Times.Never());
         _userRepositoryMock.Verify(
-            r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()),
+            r => r.UpdateAsync(It.IsAny<User>()),
             Times.Never());
 
         _uowMock.Verify(

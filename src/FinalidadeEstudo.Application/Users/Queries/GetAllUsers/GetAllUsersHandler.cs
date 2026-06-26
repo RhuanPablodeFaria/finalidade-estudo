@@ -13,15 +13,15 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery, ICacheService cache
 {
     public async Task<Result<ProjectionResponse>> Handle(
         GetAllUsersQuery query,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         var configGrid = query.configGrid;
         
-        var cached = await cache.GetAsync<ProjectionResponse>(CacheKeys.AllUsers, ct);
+        var cached = await cache.GetAsync<ProjectionResponse>(CacheKeys.AllUsers, cancellationToken);
         if (cached is not null)
             return Result<ProjectionResponse>.Success(cached);
         
-        var users = await userQuery.GetAllAsync(ct: ct);
+        var users = await userQuery.GetAllAsync();
 
         var selectedQuery = users.Select(u => new GetAllUsersResponse
         {
@@ -51,9 +51,9 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery, ICacheService cache
         };
 
         var projectionRequest = new ProjectionRequest<GetAllUsersResponse>(selectedQuery, configGrid.Start, configGrid.OffSet);
-        var result = await userQuery.PageAsync(projectionRequest, ct);
+        var result = await userQuery.PageAsync(projectionRequest, cancellationToken);
         
-        await cache.SetAsync(CacheKeys.AllUsers, result, ct, TimeSpan.FromSeconds(10));
+        await cache.SetAsync(CacheKeys.AllUsers, result, cancellationToken, TimeSpan.FromSeconds(10));
         return Result<ProjectionResponse>.Success(result);
     }
 }

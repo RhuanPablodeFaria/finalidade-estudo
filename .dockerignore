@@ -1,0 +1,10 @@
+bin
+obj
+.vscode
+.git
+.gitignore
+.env
+*.user
+*.suo
+node_modules
+TestResults

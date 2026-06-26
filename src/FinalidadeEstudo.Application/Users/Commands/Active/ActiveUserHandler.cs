@@ -11,11 +11,11 @@ public sealed class ActiveUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
 {
     public async Task<Result<string>> Handle(
         ActivateUserCommand command,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("User activation initialized.");
 
-        var entityUser = await unitOfWork.Users.GetAsync(x => x.Id == command.Id, ct);
+        var entityUser = await unitOfWork.Users.GetAsync(x => x.Id == command.Id, cancellationToken);
 
         if (entityUser is null)
         {
@@ -33,7 +33,7 @@ public sealed class ActiveUserHandler(IUnitOfWork unitOfWork, IAppLogger logger)
 
         entityUser.Activate();
 
-        await unitOfWork.CommitAsync(ct);
+        await unitOfWork.CommitAsync(cancellationToken);
 
         var sucessMessage = "User successfully activated.";
 
