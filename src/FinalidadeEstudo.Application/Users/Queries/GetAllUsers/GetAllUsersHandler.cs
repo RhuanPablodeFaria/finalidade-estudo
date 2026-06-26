@@ -1,12 +1,14 @@
 ﻿using FinalidadeEstudo.Application.Common;
 using FinalidadeEstudo.Application.Extension;
+using FinalidadeEstudo.Domain.Interfaces;
 using FinalidadeEstudo.Domain.Interfaces.Queries;
 using FinalidadeEstudo.Domain.Projecao;
+using FinalidadeEstudo.Infrastructure.Cache;
 using MediatR;
 
 namespace FinalidadeEstudo.Application.Users.Queries.GetAllUsers;
 
-public sealed class GetAllUsersHandler(IUserQuery userQuery)
+public sealed class GetAllUsersHandler(IUserQuery userQuery, ICacheService cache)
     : IRequestHandler<GetAllUsersQuery, Result<ProjectionResponse>>
 {
     public async Task<Result<ProjectionResponse>> Handle(
@@ -14,6 +16,11 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery)
         CancellationToken cancellationToken)
     {
         var configGrid = query.configGrid;
+        
+        var cached = await cache.GetAsync<ProjectionResponse>(CacheKeys.AllUsers, cancellationToken);
+        if (cached is not null)
+            return Result<ProjectionResponse>.Success(cached);
+        
         var users = await userQuery.GetAllAsync();
 
         var selectedQuery = users.Select(u => new GetAllUsersResponse
@@ -40,11 +47,13 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery)
             "3" => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.CpfCnpj),
             "4" => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.DateBirth),
             "5" => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.IsActive),
-            _ => selectedQuery.SortBankInquiry("asc", x => x.Id)
+            _ => selectedQuery.SortBankInquiry(configGrid.OrderDir, x => x.Id)
         };
 
-        var projectionRequest = new ProjectionRequest<GetAllUsersResponse>(selectedQuery!, configGrid.Start, configGrid.OffSet);
+        var projectionRequest = new ProjectionRequest<GetAllUsersResponse>(selectedQuery, configGrid.Start, configGrid.OffSet);
         var result = await userQuery.PageAsync(projectionRequest, cancellationToken);
+        
+        await cache.SetAsync(CacheKeys.AllUsers, result, cancellationToken, TimeSpan.FromSeconds(10));
         return Result<ProjectionResponse>.Success(result);
     }
 }

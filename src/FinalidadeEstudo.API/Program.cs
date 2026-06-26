@@ -7,6 +7,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddLoggingServices(builder.Configuration)
+                .AddCacheServices(builder.Configuration)
                 .AddVersioningServices()
                 .AddApplicationServices()
                 .AddDependencyInjection();

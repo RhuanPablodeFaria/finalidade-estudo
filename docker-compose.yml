@@ -1,5 +1,13 @@
 services:
-
+  
+  redis:
+    image: redis:7-alpine
+    container_name: finalidade_cache
+    ports: 
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+  
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04
     container_name: finalidade_sqlserver
@@ -28,10 +36,14 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       DatabaseSettings__ConnectionString: "Server=sqlserver,1433;Database=FinalidadeEstudoDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=True"
+      RedisSettings__ConnectionString: "redis:6379"
     depends_on:
       sqlserver:
         condition: service_healthy
+      redis:
+        condition: service_started
     restart: on-failure
 
 volumes:
   sqlserver_data:
+  redis_data:

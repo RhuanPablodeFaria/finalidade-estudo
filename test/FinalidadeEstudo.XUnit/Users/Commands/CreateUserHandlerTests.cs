@@ -6,7 +6,7 @@ using FinalidadeEstudo.Domain.Interfaces.Repositories;
 using FluentAssertions;
 using Moq;
 
-namespace FinalidadeEstudo.UnitTests.Users.Commands;
+namespace FinalidadeEstudo.XUnit.Users.Commands;
 
 public sealed class CreateUserHandlerTests
 {
