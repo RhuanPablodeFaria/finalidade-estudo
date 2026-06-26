@@ -4,10 +4,10 @@ namespace FinalidadeEstudo.Domain.Projecao;
 
 public class ProjectionResponse
 {
-    public int TotalRegistros { get; private set; }
-    public string Data { get; private set; } = string.Empty;
+    public int TotalRegistros { get; set; }
+    public string Data { get; set; } = string.Empty;
 
-    private ProjectionResponse() { }
+    public ProjectionResponse() { }
 
     public static ProjectionResponse Create<T>(IEnumerable<T> data, int total)
     {

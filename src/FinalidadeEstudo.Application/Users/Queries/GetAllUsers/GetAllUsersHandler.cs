@@ -1,12 +1,14 @@
 ﻿using FinalidadeEstudo.Application.Common;
 using FinalidadeEstudo.Application.Extension;
+using FinalidadeEstudo.Domain.Interfaces;
 using FinalidadeEstudo.Domain.Interfaces.Queries;
 using FinalidadeEstudo.Domain.Projecao;
+using FinalidadeEstudo.Infrastructure.Cache;
 using MediatR;
 
 namespace FinalidadeEstudo.Application.Users.Queries.GetAllUsers;
 
-public sealed class GetAllUsersHandler(IUserQuery userQuery)
+public sealed class GetAllUsersHandler(IUserQuery userQuery, ICacheService cache)
     : IRequestHandler<GetAllUsersQuery, Result<ProjectionResponse>>
 {
     public async Task<Result<ProjectionResponse>> Handle(
@@ -14,6 +16,11 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery)
         CancellationToken ct)
     {
         var configGrid = query.configGrid;
+        
+        var cached = await cache.GetAsync<ProjectionResponse>(CacheKeys.AllUsers, ct);
+        if (cached is not null)
+            return Result<ProjectionResponse>.Success(cached);
+        
         var users = await userQuery.GetAllAsync(ct: ct);
 
         var selectedQuery = users.Select(u => new GetAllUsersResponse
@@ -45,6 +52,8 @@ public sealed class GetAllUsersHandler(IUserQuery userQuery)
 
         var projectionRequest = new ProjectionRequest<GetAllUsersResponse>(selectedQuery, configGrid.Start, configGrid.OffSet);
         var result = await userQuery.PageAsync(projectionRequest, ct);
+        
+        await cache.SetAsync(CacheKeys.AllUsers, result, ct, TimeSpan.FromSeconds(10));
         return Result<ProjectionResponse>.Success(result);
     }
 }
