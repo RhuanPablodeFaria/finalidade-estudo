@@ -1,5 +1,4 @@
-﻿using Castle.Core.Logging;
-using FinalidadeEstudo.Application.Users.Commands.Deactive;
+﻿using FinalidadeEstudo.Application.Users.Commands.Deactive;
 using FinalidadeEstudo.Domain.Entities;
 using FinalidadeEstudo.Domain.Enums;
 using FinalidadeEstudo.Domain.Interfaces;
@@ -8,7 +7,7 @@ using FinalidadeEstudo.Domain.ValueObject;
 using FluentAssertions;
 using Moq;
 
-namespace FinalidadeEstudo.UnitTests.Users.Commands;
+namespace FinalidadeEstudo.XUnit.Users.Commands;
 
 public sealed class DeactiveUserHandlerTests
 {
